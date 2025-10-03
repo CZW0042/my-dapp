@@ -11,10 +11,10 @@ export default function Home() {
   const [isPending, setIsPending] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
 
-  // ✅ Your deployed contract address on Sepolia
+  // Your deployed contract (Sepolia)
   const CONTRACT_ADDRESS = '0x77D7472ee2A11827666a26a5e361b25A9AA8899e';
 
-  // ✅ ABI (must match the deployed contract)
+  // ABI must match your contract
   const ABI = [
     {
       inputs: [{ internalType: 'string', name: '_message', type: 'string' }],
@@ -59,9 +59,9 @@ export default function Home() {
       const provider = new ethers.BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
 
-      // Safety check
+      // Safety check（避免 BigInt 字面量，转成 number 对比）
       const network = await provider.getNetwork();
-      if (network.chainId !== 11155111n) {
+      if (Number(network.chainId) !== 11155111) {
         throw new Error(
           `Wrong network: ${network.chainId.toString()}. Please switch to Sepolia.`,
         );
@@ -94,7 +94,7 @@ export default function Home() {
         return;
       }
 
-      // Ensure Sepolia before sending tx
+      // Ensure Sepolia before sending tx (string check is fine)
       const chainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
       if (chainId !== '0xaa36a7') {
         await (window as any).ethereum.request({
